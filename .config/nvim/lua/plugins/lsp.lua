@@ -70,18 +70,19 @@ return {
         callback = function(event)
           local opts = {buffer = event.buf}
 
-          vim.keymap.set({ 'n', 'v' }, '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+          vim.keymap.set({ 'n', 'v' }, '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
           vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
           vim.keymap.set('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
           vim.keymap.set('n', '<space>f', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
-          vim.keymap.set('n', ']q', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
-          vim.keymap.set('n', '[q', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
+          vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
+          vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
+          vim.keymap.set('n', '<leader>d', '<cmd>lua vim.diagnostic.open_float()<cr>', opts)
           vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
         end,
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = {'ts_ls', 'eslint', 'lua_ls', 'jsonls'},
+        ensure_installed = {'ts_ls', 'eslint@4.8.0', 'lua_ls', 'jsonls'},
         handlers = {
           -- this first function is the "default handler"
           -- it applies to every language server without a "custom handler"
