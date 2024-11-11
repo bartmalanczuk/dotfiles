@@ -1,7 +1,15 @@
 return {
-  'airblade/vim-gitgutter',
+  {
+    'airblade/vim-gitgutter',
+    config = function()
+      vim.cmd("GitGutterLineNrHighlightsEnable")
+    end
+  },
   'tpope/vim-fugitive',
-  config = function()
-    vim.cmd("GitGutterLineNrHighlightsEnable")
-  end,
+  {'akinsho/git-conflict.nvim',
+    version = "*",
+    opts = {
+      default_mappings = true,
+    }
+  }
 }
