@@ -15,13 +15,14 @@ return {
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
+    fix_pairs = true,
     config = function()
       local cmp = require('cmp')
 
       cmp.setup({
         sources = {
-          {name = 'nvim_lsp'},
-          {name = 'copilot'},
+          { name = 'nvim_lsp', group_index = 1 },
+          { name = 'copilot',  group_index = 2 },
         },
         mapping = cmp.mapping.preset.insert({
           ['<C-Space>'] = cmp.mapping.complete(),
@@ -41,12 +42,12 @@ return {
   -- LSP
   {
     'neovim/nvim-lspconfig',
-    cmd = {'LspInfo', 'LspInstall', 'LspStart'},
-    event = {'BufReadPre', 'BufNewFile'},
+    cmd = { 'LspInfo', 'LspInstall', 'LspStart' },
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'williamboman/mason.nvim'},
-      {'williamboman/mason-lspconfig.nvim'},
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'williamboman/mason.nvim' },
+      { 'williamboman/mason-lspconfig.nvim' },
     },
     init = function()
       -- Reserve a space in the gutter
@@ -69,7 +70,7 @@ return {
       vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP actions',
         callback = function(event)
-          local opts = {buffer = event.buf}
+          local opts = { buffer = event.buf }
 
           vim.keymap.set({ 'n', 'v' }, '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
           vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
@@ -82,8 +83,16 @@ return {
         end,
       })
 
+      -- Format on save
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = buffer,
+        callback = function()
+          vim.lsp.buf.format { async = false }
+        end
+      })
+
       require('mason-lspconfig').setup({
-        ensure_installed = {'ts_ls', 'eslint@4.8.0', 'lua_ls', 'jsonls'},
+        ensure_installed = { 'ts_ls', 'eslint@4.8.0', 'lua_ls', 'jsonls', 'biome', 'gopls' },
         handlers = {
           -- this first function is the "default handler"
           -- it applies to every language server without a "custom handler"

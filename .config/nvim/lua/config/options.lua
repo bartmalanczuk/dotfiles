@@ -23,3 +23,6 @@ vim.api.nvim_create_autocmd("VimResized", { pattern = "*", command = [[:wincmd =
 vim.opt.splitbelow = true
 -- During vertical split, move coursor to right pane
 vim.opt.splitright = true
+
+-- enable virtual line
+vim.diagnostic.config({ virtual_text = true })

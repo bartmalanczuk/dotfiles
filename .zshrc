@@ -106,7 +106,23 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
-#
+git-recent() {
+    # Show 10 most recent branches used in the last 10 days
+    local count=${1:-10}
+    git for-each-ref --color=always  --sort=-committerdate refs/heads/ --count=$count \
+    --format='%(committerdate:short)|%(HEAD)|%(color:yellow)%(refname:short)%(color:reset)|(%(committerdate:relative))|-- %(contents:lines=1)' \
+    | sed 's/\*/->/' | column -t -c 5 -s '|' | grep -E -v '(?:1[1-9]|[2-9]\d|\d{3,})\s*days'
+}
+
+git-switch-fzf() {
+    selected=$(git-recent | fzf --ansi | sed 's/->/ /' | awk '{print $2}')
+    if [ -n "$selected" ]; then
+        git switch $selected
+    fi
+}
+alias gr='git-recent'
+alias gri='git-switch-fzf'
+
 
 # Load NVM
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -114,3 +130,15 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 # Load Luarocks
 export PATH="$HOME/.luarocks/bin:$PATH"
+
+# Load zoxide
+eval "$(zoxide init zsh)"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Load machine-specific configuration
+if [[ -f "$HOME/.zsh.local" ]]; then
+    source "$HOME/.zsh.local"
+fi
+
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
