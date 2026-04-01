@@ -117,6 +117,7 @@ return {
     end
   },
   'tpope/vim-fugitive',
+  'tpope/vim-rhubarb',
   {
     'akinsho/git-conflict.nvim',
     version = "*",
